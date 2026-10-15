@@ -1,0 +1,26 @@
+# Det träningen skriver
+outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Hemligheter
+.env
+.env.*
+
+# Editorer och OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
