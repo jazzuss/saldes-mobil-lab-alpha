@@ -1,6 +1,8 @@
 name: CI
 
-on: push
+on:
+  push:
+  pull_request:
 
 jobs:
   allt:
@@ -14,6 +16,8 @@ jobs:
 
       - run: pip install -e .
 
-      - run: pytest
+      - run: pip install pytest
 
-      - run: python -m churn.model
+      - run: pytest tests/test_data.py tests/test_features.py tests/test_model.py
+
+      - run: python -m churn.model tests/test_se_om_matvarden_finns.py
