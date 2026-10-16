@@ -1,7 +1,10 @@
 name: CI
 
-on: push
-
+on: 
+  push:
+  pull_request:
+    branches: [main]
+    
 jobs:
   allt:
     runs-on: ubuntu-latest
