@@ -1,6 +1,8 @@
 name: CI
 
-on: push
+on:
+  push:
+  pull_request:
 
 jobs:
   allt:
@@ -13,6 +15,8 @@ jobs:
           python-version: "3.13"
 
       - run: pip install -e .
+
+      - run: pip install pytest
 
       - run: pytest
 
