@@ -1,10 +1,10 @@
 """Testnivå 3: modell. Kontrakt och reproducerbarhet."""
+
 import numpy as np
 import pytest
 
 from churn.data import FEATURES, dela_upp, las_data, skapa_features
 from churn.model import trana_och_utvardera
-
 
 @pytest.fixture(scope="module")
 def resultat():
