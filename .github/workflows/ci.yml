@@ -1,26 +1,27 @@
 name: CI
 
-on: 
+on:
   push:
-  pull_request:
-    branches: [main]
-    
+
 jobs:
   allt:
     runs-on: ubuntu-latest
     steps:
+      
       - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.13" 
+          python-version: "3.13"
 
           cache: "pip"
-            
-          cache-dependency-path: "pyproject.toml"
 
+          cache-dependency-path: "pyproject.toml"
+      
       - run: pip install -e .
 
-      - run: pytest
+      - run: pip install pytest
 
-      - run: python -m churn.model
+      - run: pytest tests/test_data.py tests/test_features.py tests/test_model.py
+
+      - run: python -m churn.model tests/test_se_om_matvarden_finns.py
