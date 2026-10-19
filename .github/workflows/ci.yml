@@ -3,6 +3,11 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      datafil:
+        description: "Vilken datafil ska kontrolleras?"
+        default: "data/kundbas.csv"
 
 jobs:
   test:
@@ -48,7 +53,7 @@ jobs:
 
       - run: pip install -e ".[data]"
 
-      - run: python kontroller/schema.py data/kundbas.csv
+      - run: python kontroller/schema.py ${{ inputs.datafil || 'data/kundbas.csv' }}
 
   train:
     runs-on: ubuntu-latest
