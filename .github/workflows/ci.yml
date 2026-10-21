@@ -3,6 +3,11 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      datafil:
+        description: "Vilken datafil ska kontrolleras?"
+        default: "data/kundbas.csv"
 
 jobs:
   test:
@@ -32,9 +37,27 @@ jobs:
 
       - run: pytest tests/test_data.py tests/test_features.py tests/test_model.py
 
+  datakontroll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+
+        with:
+          python-version: "3.11"
+
+          cache: "pip"
+
+          cache-dependency-path: "pyproject.toml"
+
+      - run: pip install -e ".[data]"
+
+      - run: python kontroller/schema.py ${{ inputs.datafil || 'data/kundbas.csv' }}
+
   train:
     runs-on: ubuntu-latest
-    needs: test
+    needs: [test, datakontroll]
 
     steps:
       - uses: actions/checkout@v7
