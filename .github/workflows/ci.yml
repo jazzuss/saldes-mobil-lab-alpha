@@ -72,4 +72,15 @@ jobs:
 
       - run: pip install -e .
 
-      - run: python -m churn.model tests/test_se_om_matvarden_finns.py
+      - run: pip install pytest
+
+      - run: python -m churn.model
+
+      - run: python -m pytest tests/test_se_om_matvarden_finns.py
+
+      - name: Ladda upp modell och mätvärden
+        uses: actions/upload-artifact@v7
+        with:
+          name: modell-${{ github.sha }}
+          path: outputs/
+          if-no-files-found: error
