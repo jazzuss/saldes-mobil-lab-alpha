@@ -31,7 +31,7 @@ jobs:
 
           cache-dependency-path: "pyproject.toml"
 
-      - run: pip install -e .
+      - run: pip install -e ".[data]"
 
       - run: pip install pytest
 
