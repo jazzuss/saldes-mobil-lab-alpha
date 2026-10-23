@@ -107,7 +107,7 @@ jobs:
       - run: python -m churn.evaluate
 
       - name: Testa ROC AUC med pytest
-        if: success() || faliure()
+        if: success() || failure()
         run: python -m pytest tests/test_check_ROC_AUC_values.py
 
       # AI genererat
