@@ -9,6 +9,10 @@ on:
         description: "Vilken datafil ska kontrolleras?"
         default: "data/kundbas.csv"
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
