@@ -1,6 +1,10 @@
 name: CI
 
 on:
+  schedule:
+    - cron: "0 6 * * 1"
+      timezone: "Europe/Stockholm"
+
   push:
     paths:
       - "src/**"
@@ -9,6 +13,7 @@ on:
       - "kontroller/**"
       - "pyproject.toml"
       - ".github/workflows/**"
+
   pull_request:
     paths:
       - "src/**"
@@ -17,6 +22,7 @@ on:
       - "kontroller/**"
       - "pyproject.toml"
       - ".github/workflows/**"
+
   workflow_dispatch:
     inputs:
       datafil:
@@ -170,17 +176,21 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-          cache-dependency-path: "pyprject.toml"
+          cache-dependency-path: "pyproject.toml"
 
       - run: pip install -e .
 
       - uses: actions/download-artifact@v4
         with:
+          name: modell-${{ github.sha }}
           path: outputs/
 
-      - run: python -m churn.score
+      - name: skapa ringlista
+        run: python -m churn.score
 
-      - uses: actions/upload-artifact@v4
+      - name: Ladda upp ringlistan
+        uses: actions/upload-artifact@v4
         with:
+          name: ringlista-${{ github.sha }}
           path: outputs/ringlista.csv
           if-no-files-found: error
