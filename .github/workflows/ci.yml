@@ -78,12 +78,13 @@ jobs:
 
       - run: python -m churn.model
 
-      - name: Ladda upp modell och mätvärden
+      - name: Ladda upp kandidatmodell och mätvärden
         uses: actions/upload-artifact@v4
         with:
-          name: modell-${{ github.sha }}
+          name: kandidat-${{ github.sha }}
           path: outputs/
           if-no-files-found: error
+          retention-days: 1
 
   utvardera:
     runs-on: ubuntu-latest
@@ -96,10 +97,10 @@ jobs:
         with:
           extras: "dev"
 
-      - name: Ladda ner modell och mätvärden
+      - name: Ladda ner kandidatmodell och mätvärden
         uses: actions/download-artifact@v4
         with:
-          name: modell-${{ github.sha }}
+          name: kandidat-${{ github.sha }}
           path: outputs/
 
       - run: python -m churn.evaluate
@@ -107,6 +108,13 @@ jobs:
       - name: Testa ROC AUC med pytest
         if: success() || failure()
         run: python -m pytest tests/test_check_ROC_AUC_values.py
+        
+      - name: Ladda upp godkänd modell
+        uses: actions/upload-artifact@v4
+        with:
+          name: modell-${{ github.sha }}
+          path: outputs/
+          if-no-files-found: error
 
       # AI genererat
 
