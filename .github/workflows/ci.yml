@@ -208,7 +208,7 @@ jobs:
       - name: Smoke-test
         run: |
           docker run -d --name churn -p 8000:8000 "$IMAGE"
-          curl --fail --retry 10 --retry-connrefused --retry-delay 2 http://localhost:8000/health
+          curl --fail --retry 15 --retry-all-errors --retry-delay 2 http://localhost:8000/health
           svar=$(curl --fail -s -X POST http://localhost:8000/predict \
             -H "Content-Type: application/json" \
             -d '{"alder": 30, "region": "Stockholm", "abonnemang": "Bas", "manader_som_kund": 2, "manadskostnad": 149.0, "data_gb_per_manad": 5.0, "supportarenden_12m": 3}')
