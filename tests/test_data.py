@@ -5,7 +5,6 @@ import pytest
 
 from churn.data import FEATURES, MAL, las_data, skapa_features
 from kontroller.schema import schema
-from churn.data import FEATURES, MAL, las_data, skapa_features
 
 
 def test_forvantade_kolumner_finns():
