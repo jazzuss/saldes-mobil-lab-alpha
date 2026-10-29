@@ -1,4 +1,5 @@
 """Testnivå 3: modell. Kontrakt och reproducerbarhet."""
+import os
 
 import numpy as np
 import pytest
@@ -7,9 +8,10 @@ from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import train_test_split
 
 from churn.data import FEATURES, dela_upp, las_data, skapa_features
+from churn.evaluate import STANDARDTROSKEL
 from churn.model import SEED, trana_och_utvardera
 
-ROC_AUC_TROSKEL = 0.70
+ROC_AUC_TROSKEL = float(os.environ.get("MIN_ROC_AUC", STANDARDTROSKEL))
 
 @pytest.fixture(scope="module")
 def resultat():
