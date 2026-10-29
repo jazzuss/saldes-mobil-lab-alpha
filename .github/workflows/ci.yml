@@ -14,6 +14,8 @@ on:
       - "pyproject.toml"
       - ".github/workflows/**"
       - ".github/actions/**"
+      - "Dockerfile"
+      - ".dockerignore"
 
   pull_request:
     paths:
@@ -24,6 +26,8 @@ on:
       - "pyproject.toml"
       - ".github/workflows/**"
       - ".github/actions/**"
+      - "Dockerfile"
+      - ".dockerignore"
 
   workflow_dispatch:
     inputs:
@@ -169,3 +173,60 @@ jobs:
           name: ringlista-${{ github.sha }}
           path: outputs/ringlista.csv
           if-no-files-found: error
+
+  docker:
+    name: bygg och testa image
+    runs-on: ubuntu-latest
+    needs: utvardera
+
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Ladda ner godkänd modell
+        uses: actions/download-artifact@v4
+        with:
+          name: modell-${{ github.sha }}
+          path: outputs/
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Bygg image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: ${{ env.IMAGE }}
+        
+      # AI genererat
+      - name: Smoke-test
+        run: |
+          docker run -d --name churn -p 8000:8000 "$IMAGE"
+          curl --fail --retry 10 --retry-connrefused --retry-delay 2 http://localhost:8000/health
+          svar=$(curl --fail -s -X POST http://localhost:8000/predict \
+            -H "Content-Type: application/json" \
+            -d '{"alder": 30, "region": "Stockholm", "abonnemang": "Bas", "manader_som_kund": 2, "manadskostnad": 149.0, "data_gb_per_manad": 5.0, "supportarenden_12m": 3}')
+          echo "$svar"
+          echo "$svar" | python3 -c 'import json, sys; r = json.load(sys.stdin)["risk"]; assert 0 <= r <= 1, r'
+
+      - name: Visa containerns logg om smoke testet fallerar
+        if: failure()
+        run: docker logs churn
+
+      - name: Logga in på ghcr.io
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pusha imagen
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: docker push "$IMAGE"
