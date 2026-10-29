@@ -1,40 +1,20 @@
-# Churnmodellen – Saldes Mobil AB
+## Kvalitetströskel: ROC AUC ≥ 0,70
 
-> *Saldes Mobil AB är ett påhittat företag och all kunddata är fiktiv. Repot är en övning i
-> kursen Kontinuerlig integration och leverans (MLOps25, Nackademin).*
+Modellen godkänns bara om ROC AUC är minst 0,70 (`STANDARDTROSKEL` i `src/churn/evaluate.py`).
 
-## Välkommen till teamet
+- **Varför ROC AUC och inte accuracy?** Cirka 81 % av kunderna stannar, så en modell som aldrig
+  hittar någon som slutar får ändå 0,81 i accuracy. ROC AUC mäter i stället hur bra modellen
+  rangordnar kunderna, och det är just rangordningen som ringlistan bygger på.
+- **Varför inte lägre?** En slumpmässig gissning ger 0,50. En tröskel nära den skulle släppa
+  igenom modeller som knappt är bättre än att gissa, och då blir ringlistan i princip slumpmässig.
+  Det var så incidenten med den sämre ringlistan kunde hända.
+- **Varför inte högre?** Den nuvarande modellen ligger på cirka 0,79. En tröskel över den skulle
+  underkänna varje ny modell, även när den fungerar, och kundtjänst skulle bli utan uppdaterad ringlista.
+- **Varför just 0,70?** Den ger cirka 0,09 i marginal mot dagens modell, så normala små variationer
+  ger inte falsklarm, men en tydligt sämre modell stoppas. 0,70 brukar också räknas som gränsen för
+  acceptabel förmåga att skilja grupper åt.
 
-Hej och välkommen!
-
-Kul att du börjar hos oss som MLOps-ingenjör. Här är bakgrunden till ditt första uppdrag.
-
-Vi tappar kunder. Analysteamet har byggt en modell som förutsäger vilka kunder som riskerar
-att säga upp sitt abonnemang. Varje måndag får kundtjänst en **ringlista** med de kunder som
-har högst risk, och ringer dem med ett erbjudande.
-
-I dag sköts det mesta för hand. Modellen tränas på en dator här på kontoret, och modellfilen
-ligger incheckad i `models/`. Ringlistan gör någon varje måndag morgon med kommandona nedan.
-Vi har ett CI-workflow, men det kör allt i ett enda jobb, installerar om alla paket vid
-varje push och testar på en annan Python-version än servern som gör ringlistan (3.11).
-Sedan förra veckan är det dessutom rött, och ingen har hunnit ta reda på varför.
-
-För två veckor sedan gick det riktigt fel. Kundtjänst fick en ringlista från en modell som
-var sämre än den förra. Ingen märkte det förrän säljarna klagade, och ingen kunde säga vilken
-commit eller vilken data modellen kom från.
-
-**Ditt uppdrag:** se till att bara en testad modell med känd härkomst kan bli en ringlista.
-Jag har skrivit ärenden åt dig, se *Kom igång* nedan.
-
-Två regler:
-
-- Ändra inte modellen, datan eller feature-koden i `src/churn/data.py`. Den sköter
-  analysteamet. Ditt arbete är workflows, tester och inställningar i repot.
-- Ingen pushar direkt till main när vi väl har skydd på plats. Allt går via pull requests.
-
-Lycka till, och fråga hellre en gång för mycket.
-
-*Teamleaden*
+Tröskeln kan höjas tillfälligt med miljövariabeln `MIN_ROC_AUC`.
 
 ## Kom igång
 
