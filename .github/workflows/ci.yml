@@ -104,7 +104,8 @@ jobs:
         with:
           name: kandidat-${{ github.sha }}
           path: outputs/
-
+        env:
+          MIN_ROC_AUC: "0.90"
       - run: python -m churn.evaluate
 
       - name: Ladda upp godkänd modell
@@ -152,7 +153,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - uses: ./.github/actions/installera
-      
+
       - uses: actions/download-artifact@v4
         with:
           name: modell-${{ github.sha }}
@@ -197,7 +198,7 @@ jobs:
           context: .
           load: true
           tags: ${{ env.IMAGE }}
-        
+
       # AI genererat
       - name: Smoke-test
         run: |
