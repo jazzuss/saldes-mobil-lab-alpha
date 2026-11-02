@@ -105,9 +105,7 @@ jobs:
           name: kandidat-${{ github.sha }}
           path: outputs/
 
-      - env:
-          MIN_ROC_AUC: "0.90"
-        run: python -m churn.evaluate
+      - run: python -m churn.evaluate
 
       - name: Ladda upp godkänd modell
         uses: actions/upload-artifact@v4
