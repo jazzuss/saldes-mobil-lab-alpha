@@ -12,7 +12,7 @@ import os
 import sys
 from pathlib import Path
 
-STANDARDTROSKEL = 0.70
+STANDARDTROSKEL = 0.90
 
 
 def main(argv: list[str] | None = None) -> int:
