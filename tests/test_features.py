@@ -1,3 +1,5 @@
+# övning inför demo 
+
 """Testnivå 1: kod. Enhetstester av feature-koden, utan modell och utan riktig data."""
 
 import pandas as pd
