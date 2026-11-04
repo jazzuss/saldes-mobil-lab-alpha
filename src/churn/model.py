@@ -10,8 +10,8 @@ from pathlib import Path
 
 import joblib
 from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline, make_pipeline
@@ -33,7 +33,10 @@ def bygg_modell() -> Pipeline:
     return Pipeline(
         [
             ("forbehandling", forbehandling),
-            ("klassificerare", LogisticRegression(max_iter=1000, random_state=SEED)),
+            (
+                "klassificerare",
+                RandomForestClassifier(n_estimators=200, min_samples_leaf=5, random_state=SEED),
+            ),
         ]
     )
 
