@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: saldes-model
+
+spec:
+  replicas: 1
+
+  strategy:
+    type: RollingUpdate
+
+  selector:
+    matchLabels:
+      app: saldes-model
+
+  template:
+    metadata:
+      labels:
+        app: saldes-model
+
+    spec:
+      containers:
+        - name: saldes-model
+          image: ghcr.io/jazzuss/saldes-mobil-lab-alpha:44218e13bc0d37bb641f4736e2d53415643d49b3
+
+          ports:
+            - containerPort: 8000
+
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
