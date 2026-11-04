@@ -1,0 +1,23 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: saldes-churn
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts: [jasmin-shahbedaghloo.89-167-53-206.sslip.io]
+      secretName: saldes-churn-tls
+  rules:
+    - host: jasmin-shahbedaghloo.89-167-53-206.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: saldes-churn
+                port:
+                  number: 80
