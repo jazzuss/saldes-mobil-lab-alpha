@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saldes-churn
+  labels:
+    app: saldes-churn
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: saldes-churn
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # högst en extra pod under en uppdatering
+      maxUnavailable: 0  # ingen gammal pod stängs förrän en ny är redo
+  template:
+    metadata:
+      labels:
+        app: saldes-churn
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          # IMAGE_TAG byts mot commitens SHA när manifestet används
+          image: ghcr.io/jazzuslab/saldes-mobil-lab-kubernetes:IMAGE_TAG
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: 50m
+              memory: 100Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 10
+            failureThreshold: 3
