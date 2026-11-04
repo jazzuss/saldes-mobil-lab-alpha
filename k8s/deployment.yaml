@@ -22,7 +22,17 @@ spec:
     spec:
       containers:
         - name: saldes-model
-          image: ghcr.io/jazzuss/saldes-mobil-lab-alpha:44218e13bc0d37bb641f4736e2d53415643d49b3
+          image: ghcr.io/norelindkvist-debug/saldes-mobil-kubernetes:fbb231c78f21e0a10235052c83828e73da57925b
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
 
           ports:
             - containerPort: 8000
