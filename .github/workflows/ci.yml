@@ -168,7 +168,7 @@ jobs:
           path: outputs/ringlista.csv
           if-no-files-found: error
 
-    docker:
+  docker:
     name: bygg och testa image
     runs-on: ubuntu-latest
     needs: utvardera
