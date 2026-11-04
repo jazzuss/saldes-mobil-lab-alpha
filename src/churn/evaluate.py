@@ -11,8 +11,8 @@ import json
 import os
 import sys
 from pathlib import Path
-
-STANDARDTROSKEL = 0.70
+# change threshold
+STANDARDTROSKEL = 0.90
 
 
 def main(argv: list[str] | None = None) -> int:
